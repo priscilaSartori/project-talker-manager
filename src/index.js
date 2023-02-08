@@ -22,9 +22,9 @@ app.get('/talker', async (req, res) => {
 
 app.get('/talker/:id', async (req, res) => {
   const speakers = await talkerReadFile();
-  const speaker = speakers.find(({id}) => id === Number(req.params.id))
+  const speaker = speakers.find(({ id }) => id === Number(req.params.id));
   if (!speaker) {
-    res.status(HTTP_NOTFOUND_STATUS).send({"message": "Pessoa palestrante não encontrada"});
+    res.status(HTTP_NOTFOUND_STATUS).send({ message: 'Pessoa palestrante não encontrada' });
   } res.status(HTTP_OK_STATUS).send(speaker);
 });
 
