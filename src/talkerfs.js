@@ -10,4 +10,5 @@ const talkerReadFile = async () => {
 
 module.exports = {
   talkerReadFile,
+  talkerFilePath,
 };

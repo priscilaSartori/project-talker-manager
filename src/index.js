@@ -1,4 +1,5 @@
 const express = require('express');
+const randtoken = require('rand-token');
 const { talkerReadFile } = require('./talkerfs');
 
 const app = express();
@@ -26,6 +27,11 @@ app.get('/talker/:id', async (req, res) => {
   if (!speaker) {
     res.status(HTTP_NOTFOUND_STATUS).send({ message: 'Pessoa palestrante não encontrada' });
   } res.status(HTTP_OK_STATUS).send(speaker);
+});
+
+app.post('/login', async (req, res) => {
+  const token = randtoken.generate(16);
+  res.status(HTTP_OK_STATUS).json({ token });
 });
 
 app.listen(PORT, () => {
