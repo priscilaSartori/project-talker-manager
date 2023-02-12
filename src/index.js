@@ -20,6 +20,19 @@ const HTTP_CREATED = 201;
 const HTTP_NO_CONTENT = 204; 
 const PORT = '3000';
 
+app.get('/talker/search', auth, async (req, res) => {
+   const { q } = req.query;
+   const speakers = await talkerReadFile();
+   if (!q) {
+    res.status(HTTP_OK_STATUS).send(speakers);
+   }
+   if (q) {
+    const filteredSpeaker = speakers.filter((element) => element.name.includes(q));
+    res.status(HTTP_OK_STATUS).json(filteredSpeaker);
+   } 
+    res.status(HTTP_OK_STATUS).end();
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
