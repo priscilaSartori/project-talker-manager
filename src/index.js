@@ -17,6 +17,7 @@ app.use(express.json());
 const HTTP_OK_STATUS = 200;
 const HTTP_NOTFOUND_STATUS = 404;
 const HTTP_CREATED = 201;
+const HTTP_NO_CONTENT = 204; 
 const PORT = '3000';
 
 // não remova esse endpoint, e para o avaliador funcionar
@@ -70,6 +71,15 @@ async (req, res) => {
   const updatedSpeaker = JSON.stringify(speakers, null, 2);
     await fs.writeFile(talkerFilePath, updatedSpeaker);
     res.status(HTTP_OK_STATUS).json(speakers[index]);
+});
+
+app.delete('/talker/:id', auth, async (req, res) => {
+  const { id } = req.params;
+  const speakers = await talkerReadFile();
+  const filteredSpeaker = speakers.filter((speaker) => speaker.id !== Number(id));
+  const updatedSpeaker = JSON.stringify(filteredSpeaker, null, 2);
+    await fs.writeFile(talkerFilePath, updatedSpeaker);
+    res.status(HTTP_NO_CONTENT).end();
 });
 
 app.listen(PORT, () => {
