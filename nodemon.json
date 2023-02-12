@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "src/talker.json",
+    "/thunder*.json"
+  ]
+}
