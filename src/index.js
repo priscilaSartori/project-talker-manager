@@ -1,14 +1,22 @@
 const express = require('express');
 const randtoken = require('rand-token');
-const { talkerReadFile } = require('./talkerfs');
+const fs = require('fs/promises');
+const { talkerReadFile, talkerFilePath } = require('./talkerfs');
 const validateEmail = require('./middlewares/validateEmail');
 const validatePassword = require('./middlewares/validatePassword');
+const auth = require('./middlewares/auth');
+const validateAge = require('./middlewares/validateAge');
+const validateName = require('./middlewares/validateName');
+const validateTalk = require('./middlewares/validateTalk');
+const validateRate = require('./middlewares/validateRate');
+const validateWatchedAt = require('./middlewares/validateWatchedAt');
 
 const app = express();
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
 const HTTP_NOTFOUND_STATUS = 404;
+const HTTP_CREATED = 201;
 const PORT = '3000';
 
 // não remova esse endpoint, e para o avaliador funcionar
@@ -34,6 +42,21 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', validateEmail, validatePassword, async (req, res) => {
   const token = randtoken.generate(16);
   res.status(HTTP_OK_STATUS).json({ token });
+});
+
+app.post('/talker', auth, validateAge, validateName, validateTalk, validateWatchedAt, validateRate, 
+async (req, res) => {
+  const { name, age, talk } = req.body;
+  const speakers = await talkerReadFile();
+  const newSpeaker = {
+    id: speakers[speakers.length - 1].id + 1,
+    name,
+    age,
+    talk,
+  };
+  const allSpeakers = JSON.stringify([...speakers, newSpeaker]);
+  await fs.writeFile(talkerFilePath, allSpeakers);
+  res.status(HTTP_CREATED).json(newSpeaker);
 });
 
 app.listen(PORT, () => {
